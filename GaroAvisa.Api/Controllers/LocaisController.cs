@@ -1,0 +1,91 @@
+using GaroAvisa.Application.DTOs;
+using GaroAvisa.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace GaroAvisa.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class LocaisController : ControllerBase
+    {
+        private readonly ILocalService _service;
+
+        public LocaisController(ILocalService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<LocalRespostaDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Listar()
+        {
+            return Ok(await _service.ListarAsync(ObterUsuarioId()));
+        }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Buscar(int id)
+        {
+            var local = await _service.BuscarPorIdAsync(id, ObterUsuarioId());
+            return local is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(local);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Criar([FromBody] CriarLocalDto dto)
+        {
+            try
+            {
+                var criado = await _service.CriarAsync(dto, ObterUsuarioId());
+                return CreatedAtAction(nameof(Buscar), new { id = criado.Id }, criado);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { mensagem = ex.Message });
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Atualizar(int id, [FromBody] AtualizarLocalDto dto)
+        {
+            try
+            {
+                var local = await _service.AtualizarAsync(id, dto, ObterUsuarioId());
+                return local is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(local);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { mensagem = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Excluir(int id)
+        {
+            var excluido = await _service.ExcluirAsync(id, ObterUsuarioId());
+            return excluido ? NoContent() : NotFound(new { mensagem = "Local não encontrado." });
+        }
+
+        private int ObterUsuarioId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        }
+    }
+}

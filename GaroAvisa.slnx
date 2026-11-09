@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GaroAvisa.Api/GaroAvisa.Api.csproj" />
+  <Project Path="GaroAvisa.Application/GaroAvisa.Application.csproj" />
+  <Project Path="GaroAvisa.Domain/GaroAvisa.Domain.csproj" />
+  <Project Path="GaroAvisa.Infrastructure/GaroAvisa.Infrastructure.csproj" />
+</Solution>
