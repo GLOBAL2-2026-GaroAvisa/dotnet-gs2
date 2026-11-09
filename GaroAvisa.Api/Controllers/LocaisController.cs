@@ -18,6 +18,9 @@ namespace GaroAvisa.Api.Controllers
             _service = service;
         }
 
+        /// <summary>Lista os locais do usuário logado.</summary>
+        /// <response code="200">Lista retornada com sucesso.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
         [HttpGet]
         [ProducesResponseType(typeof(List<LocalRespostaDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -26,6 +29,10 @@ namespace GaroAvisa.Api.Controllers
             return Ok(await _service.ListarAsync(ObterUsuarioId()));
         }
 
+        /// <summary>Busca um local do usuário logado pelo ID.</summary>
+        /// <response code="200">Local encontrado.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
+        /// <response code="404">Local não encontrado.</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -36,6 +43,11 @@ namespace GaroAvisa.Api.Controllers
             return local is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(local);
         }
 
+        /// <summary>Cadastra um novo local para o usuário logado.</summary>
+        /// <response code="201">Local criado.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
+        /// <response code="409">Apelido já utilizado.</response>
         [HttpPost]
         [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,6 +66,12 @@ namespace GaroAvisa.Api.Controllers
             }
         }
 
+        /// <summary>Atualiza apelido, local principal e recebimento de alertas.</summary>
+        /// <response code="200">Local atualizado.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
+        /// <response code="404">Local não encontrado.</response>
+        /// <response code="409">Apelido já utilizado.</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -73,6 +91,10 @@ namespace GaroAvisa.Api.Controllers
             }
         }
 
+        /// <summary>Exclui um local do usuário logado.</summary>
+        /// <response code="204">Local excluído.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
+        /// <response code="404">Local não encontrado.</response>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

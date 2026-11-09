@@ -90,6 +90,56 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_LOCAL", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Preferencia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AlertasDoDia")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("ALERTAS_DO_DIA");
+
+                    b.Property<DateTime>("AtualizadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_ATUALIZACAO");
+
+                    b.Property<bool>("Compromissos")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("COMPROMISSOS");
+
+                    b.Property<bool>("PrevisaoMudou")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("PREVISAO_MUDOU");
+
+                    b.Property<bool>("ResumoDiarioAtivo")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("RESUMO_DIARIO_ATIVO");
+
+                    b.Property<string>("ResumoDiarioHorario")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("NVARCHAR2(5)")
+                        .HasColumnName("RESUMO_DIARIO_HORARIO");
+
+                    b.Property<bool>("SilencioNoturno")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("SILENCIO_NOTURNO");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID_USUARIO");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("T_GS_PREFERENCIA", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -133,6 +183,17 @@ namespace GaroAvisa.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Local", b =>
+                {
+                    b.HasOne("GaroAvisa.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Preferencia", b =>
                 {
                     b.HasOne("GaroAvisa.Domain.Entities.Usuario", "Usuario")
                         .WithMany()

@@ -17,6 +17,10 @@ namespace GaroAvisa.Api.Controllers
             _service = service;
         }
 
+        /// <summary>Cria uma conta de usuário e já devolve o token de acesso.</summary>
+        /// <response code="201">Conta criada.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="409">E-mail já cadastrado.</response>
         [HttpPost("cadastro")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(LoginRespostaDto), StatusCodes.Status201Created)]
@@ -35,6 +39,10 @@ namespace GaroAvisa.Api.Controllers
             }
         }
 
+        /// <summary>Faz login com e-mail e senha e devolve o token JWT.</summary>
+        /// <response code="200">Login realizado.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="401">E-mail ou senha incorretos.</response>
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(LoginRespostaDto), StatusCodes.Status200OK)]
@@ -48,6 +56,9 @@ namespace GaroAvisa.Api.Controllers
                 : Ok(resposta);
         }
 
+        /// <summary>Mostra os dados do usuário que está logado.</summary>
+        /// <response code="200">Dados do usuário.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
         [HttpGet("me")]
         [Authorize]
         [ProducesResponseType(typeof(UsuarioRespostaDto), StatusCodes.Status200OK)]

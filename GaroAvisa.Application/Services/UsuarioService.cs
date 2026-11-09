@@ -31,7 +31,7 @@ namespace GaroAvisa.Application.Services
             {
                 Nome = dto.Nome.Trim(),
                 Email = email,
-                Tipo = "CIDADAO"
+                Tipo = "USUARIO"
             };
 
             usuario.SenhaHash = _passwordHasher.HashPassword(usuario, dto.Senha);

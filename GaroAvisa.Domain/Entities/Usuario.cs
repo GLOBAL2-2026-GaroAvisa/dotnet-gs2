@@ -21,7 +21,7 @@ namespace GaroAvisa.Domain.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Tipo { get; set; } = "CIDADAO";
+        public string Tipo { get; set; } = "USUARIO";
 
         public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     }

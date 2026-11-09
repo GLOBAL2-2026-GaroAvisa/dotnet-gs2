@@ -11,6 +11,7 @@ namespace GaroAvisa.Infrastructure.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Local> Locais { get; set; }
+        public DbSet<Preferencia> Preferencias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,16 @@ namespace GaroAvisa.Infrastructure.Data
             modelBuilder.Entity<Local>().Property(l => l.Principal).HasColumnName("PRINCIPAL");
             modelBuilder.Entity<Local>().Property(l => l.ReceberAlertas).HasColumnName("RECEBER_ALERTAS");
             modelBuilder.Entity<Local>().Property(l => l.CriadoEm).HasColumnName("DT_CRIACAO");
+            modelBuilder.Entity<Preferencia>().ToTable("T_GS_PREFERENCIA");
+            modelBuilder.Entity<Preferencia>().Property(p => p.Id).HasColumnName("ID");
+            modelBuilder.Entity<Preferencia>().Property(p => p.UsuarioId).HasColumnName("ID_USUARIO");
+            modelBuilder.Entity<Preferencia>().Property(p => p.ResumoDiarioAtivo).HasColumnName("RESUMO_DIARIO_ATIVO");
+            modelBuilder.Entity<Preferencia>().Property(p => p.ResumoDiarioHorario).HasColumnName("RESUMO_DIARIO_HORARIO");
+            modelBuilder.Entity<Preferencia>().Property(p => p.AlertasDoDia).HasColumnName("ALERTAS_DO_DIA");
+            modelBuilder.Entity<Preferencia>().Property(p => p.PrevisaoMudou).HasColumnName("PREVISAO_MUDOU");
+            modelBuilder.Entity<Preferencia>().Property(p => p.Compromissos).HasColumnName("COMPROMISSOS");
+            modelBuilder.Entity<Preferencia>().Property(p => p.SilencioNoturno).HasColumnName("SILENCIO_NOTURNO");
+            modelBuilder.Entity<Preferencia>().Property(p => p.AtualizadoEm).HasColumnName("DT_ATUALIZACAO");
 
             base.OnModelCreating(modelBuilder);
         }

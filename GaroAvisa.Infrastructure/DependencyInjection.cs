@@ -24,10 +24,12 @@ namespace GaroAvisa.Infrastructure
             // 2. Repositórios (acesso ao banco)
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<ILocalRepository, LocalRepository>();
+            services.AddScoped<IPreferenciaRepository, PreferenciaRepository>();
 
             // 3. Serviços (regras de negócio)
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ILocalService, LocalService>();
+            services.AddScoped<IPreferenciaService, PreferenciaService>();
 
             // 4. Segurança
             services.AddSingleton<ITokenService, TokenService>();
