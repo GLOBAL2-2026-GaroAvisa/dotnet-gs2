@@ -15,6 +15,8 @@ namespace GaroAvisa.Infrastructure.Data
         public DbSet<RegraAlerta> RegrasAlerta { get; set; }
         public DbSet<Alerta> Alertas { get; set; }
         public DbSet<PrevisaoSalva> PrevisoesSalvas { get; set; }
+        public DbSet<Compromisso> Compromissos { get; set; }
+        public DbSet<RegistroIdempotencia> RegistrosIdempotencia { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +83,23 @@ namespace GaroAvisa.Infrastructure.Data
             modelBuilder.Entity<PrevisaoSalva>().Property(p => p.ProbabilidadeChuva).HasColumnName("PROB_CHUVA");
             modelBuilder.Entity<PrevisaoSalva>().Property(p => p.RajadaVentoKmh).HasColumnName("RAJADA_VENTO");
             modelBuilder.Entity<PrevisaoSalva>().Property(p => p.AtualizadoEm).HasColumnName("DT_ATUALIZACAO");
+
+            modelBuilder.Entity<Compromisso>().ToTable("T_GS_COMPROMISSO");
+            modelBuilder.Entity<Compromisso>().Property(c => c.Id).HasColumnName("ID");
+            modelBuilder.Entity<Compromisso>().Property(c => c.LocalId).HasColumnName("ID_LOCAL");
+            modelBuilder.Entity<Compromisso>().Property(c => c.Nome).HasColumnName("NOME");
+            modelBuilder.Entity<Compromisso>().Property(c => c.DataHora).HasColumnName("DT_COMPROMISSO");
+            modelBuilder.Entity<Compromisso>().Property(c => c.CriadoEm).HasColumnName("DT_CRIACAO");
+
+            modelBuilder.Entity<RegistroIdempotencia>().ToTable("T_GS_IDEMPOTENCIA");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.Id).HasColumnName("ID");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.Chave).HasColumnName("CHAVE");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.UsuarioId).HasColumnName("ID_USUARIO");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.Rota).HasColumnName("ROTA");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.HashRequisicao).HasColumnName("HASH_REQUISICAO");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.StatusCode).HasColumnName("STATUS_CODE");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.RespostaJson).HasColumnName("RESPOSTA_JSON");
+            modelBuilder.Entity<RegistroIdempotencia>().Property(r => r.CriadoEm).HasColumnName("DT_CRIACAO");
 
             base.OnModelCreating(modelBuilder);
         }

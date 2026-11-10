@@ -1,7 +1,9 @@
+using GaroAvisa.Api.Extensions;
 using GaroAvisa.Application.DTOs;
 using GaroAvisa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace GaroAvisa.Api.Controllers
@@ -21,11 +23,14 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="201">Conta criada.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="409">E-mail já cadastrado.</response>
+        /// <response code="429">Muitas tentativas em pouco tempo.</response>
         [HttpPost("cadastro")]
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitingExtensions.PoliticaAutenticacao)]
         [ProducesResponseType(typeof(LoginRespostaDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> Cadastrar([FromBody] CadastroUsuarioDto dto)
         {
             try
@@ -43,11 +48,14 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="200">Login realizado.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">E-mail ou senha incorretos.</response>
+        /// <response code="429">Muitas tentativas em pouco tempo.</response>
         [HttpPost("login")]
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitingExtensions.PoliticaAutenticacao)]
         [ProducesResponseType(typeof(LoginRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var resposta = await _service.LoginAsync(dto);

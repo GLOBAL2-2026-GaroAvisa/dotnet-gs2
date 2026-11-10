@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using GaroAvisa.Api.Extensions;
 using GaroAvisa.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -36,6 +37,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+// Rate limiting: limita a quantidade de pedidos por minuto (responde 429 quando passa)
+builder.Services.AddRateLimitingGaroAvisa(builder.Configuration);
 
 // Controllers e documentação
 builder.Services.AddControllers();
@@ -103,6 +107,7 @@ app.MapScalarApiReference(options =>
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 

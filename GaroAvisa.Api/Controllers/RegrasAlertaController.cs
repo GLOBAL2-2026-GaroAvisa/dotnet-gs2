@@ -1,3 +1,4 @@
+using GaroAvisa.Api.Filters;
 using GaroAvisa.Application.DTOs;
 using GaroAvisa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -48,19 +49,26 @@ namespace GaroAvisa.Api.Controllers
         /// Tipos: CHUVA_FORTE (mm), VENTO_FORTE (km/h), CALOR (°C máxima), FRIO (°C mínima) e TEMPESTADE (código do tempo, ex.: 95).
         /// Gravidades: BAIXA, MEDIA e ALTA.
         /// </remarks>
+        /// <param name="dto">Dados da regra.</param>
+        /// <param name="idempotencyKey">Chave única do pedido (opcional).</param>
         /// <response code="201">Regra criada.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="403">Usuário sem permissão de administrador.</response>
         /// <response code="409">Já existe regra com esse tipo e gravidade.</response>
+        /// <response code="422">Idempotency-Key já usado em outro pedido.</response>
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
+        [Idempotente]
         [ProducesResponseType(typeof(RegraAlertaRespostaDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Criar([FromBody] SalvarRegraAlertaDto dto)
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> Criar(
+            [FromBody] SalvarRegraAlertaDto dto,
+            [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey)
         {
             try
             {

@@ -1,3 +1,4 @@
+using GaroAvisa.Api.Filters;
 using GaroAvisa.Application.DTOs;
 using GaroAvisa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -44,16 +45,24 @@ namespace GaroAvisa.Api.Controllers
         }
 
         /// <summary>Cadastra um novo local para o usuário logado.</summary>
+        /// <remarks>Envie o cabeçalho Idempotency-Key para evitar que um pedido repetido crie o local duas vezes.</remarks>
+        /// <param name="dto">Dados do local.</param>
+        /// <param name="idempotencyKey">Chave única do pedido (opcional).</param>
         /// <response code="201">Local criado.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="409">Apelido já utilizado.</response>
+        /// <response code="422">Idempotency-Key já usado em outro pedido.</response>
         [HttpPost]
+        [Idempotente]
         [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Criar([FromBody] CriarLocalDto dto)
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> Criar(
+            [FromBody] CriarLocalDto dto,
+            [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey)
         {
             try
             {

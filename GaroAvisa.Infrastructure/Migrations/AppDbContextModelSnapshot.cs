@@ -82,6 +82,40 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_ALERTA", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Compromisso", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_CRIACAO");
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_COMPROMISSO");
+
+                    b.Property<int>("LocalId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID_LOCAL");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR2(80)")
+                        .HasColumnName("NOME");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocalId");
+
+                    b.ToTable("T_GS_COMPROMISSO", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Local", b =>
                 {
                     b.Property<int>("Id")
@@ -252,6 +286,55 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_PREVISAO", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.RegistroIdempotencia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Chave")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("CHAVE");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_CRIACAO");
+
+                    b.Property<string>("HashRequisicao")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("NVARCHAR2(64)")
+                        .HasColumnName("HASH_REQUISICAO");
+
+                    b.Property<string>("RespostaJson")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasColumnName("RESPOSTA_JSON");
+
+                    b.Property<string>("Rota")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)")
+                        .HasColumnName("ROTA");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("STATUS_CODE");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID_USUARIO");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("T_GS_IDEMPOTENCIA", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.RegraAlerta", b =>
                 {
                     b.Property<int>("Id")
@@ -345,6 +428,17 @@ namespace GaroAvisa.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Alerta", b =>
+                {
+                    b.HasOne("GaroAvisa.Domain.Entities.Local", "Local")
+                        .WithMany()
+                        .HasForeignKey("LocalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Local");
+                });
+
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Compromisso", b =>
                 {
                     b.HasOne("GaroAvisa.Domain.Entities.Local", "Local")
                         .WithMany()

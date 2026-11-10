@@ -29,6 +29,9 @@ namespace GaroAvisa.Infrastructure
             services.AddScoped<IAlertaRepository, AlertaRepository>();
             services.AddScoped<IPrevisaoSalvaRepository, PrevisaoSalvaRepository>();
 
+            services.AddScoped<ICompromissoRepository, CompromissoRepository>();
+            services.AddScoped<IIdempotenciaRepository, IdempotenciaRepository>();
+
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ILocalService, LocalService>();
             services.AddScoped<IPreferenciaService, PreferenciaService>();
@@ -37,6 +40,8 @@ namespace GaroAvisa.Infrastructure
 
             services.AddScoped<IAlertaService, AlertaService>();
             services.AddScoped<IResumoService, ResumoService>();
+
+            services.AddScoped<ICompromissoService, CompromissoService>();
 
             services.AddHttpClient<IOpenMeteoClient, OpenMeteoClient>();
 
