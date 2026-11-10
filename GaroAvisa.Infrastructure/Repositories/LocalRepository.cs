@@ -68,5 +68,11 @@ namespace GaroAvisa.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Local>> ListarParaAlertasAsync()
+        {
+            return await _context.Locais
+                .Where(l => l.ReceberAlertas)
+                .ToListAsync();
+        }
     }
 }

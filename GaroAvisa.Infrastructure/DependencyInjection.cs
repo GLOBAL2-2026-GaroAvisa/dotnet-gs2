@@ -26,11 +26,17 @@ namespace GaroAvisa.Infrastructure
             services.AddScoped<IPreferenciaRepository, PreferenciaRepository>();
             services.AddScoped<IRegraAlertaRepository, RegraAlertaRepository>();
 
+            services.AddScoped<IAlertaRepository, AlertaRepository>();
+            services.AddScoped<IPrevisaoSalvaRepository, PrevisaoSalvaRepository>();
+
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ILocalService, LocalService>();
             services.AddScoped<IPreferenciaService, PreferenciaService>();
             services.AddScoped<IRegraAlertaService, RegraAlertaService>();
             services.AddScoped<IClimaService, ClimaService>();
+
+            services.AddScoped<IAlertaService, AlertaService>();
+            services.AddScoped<IResumoService, ResumoService>();
 
             services.AddHttpClient<IOpenMeteoClient, OpenMeteoClient>();
 

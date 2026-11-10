@@ -22,6 +22,66 @@ namespace GaroAvisa.Infrastructure.Migrations
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Alerta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_CRIACAO");
+
+                    b.Property<DateTime>("DataPrevisao")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_PREVISAO");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("NVARCHAR2(300)")
+                        .HasColumnName("DESCRICAO");
+
+                    b.Property<string>("Gravidade")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("NVARCHAR2(10)")
+                        .HasColumnName("GRAVIDADE");
+
+                    b.Property<bool>("Lido")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("LIDO");
+
+                    b.Property<int>("LocalId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID_LOCAL");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("NVARCHAR2(30)")
+                        .HasColumnName("TIPO");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("TITULO");
+
+                    b.Property<double?>("ValorPrevisto")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("VALOR_PREVISTO");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocalId");
+
+                    b.ToTable("T_GS_ALERTA", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Local", b =>
                 {
                     b.Property<int>("Id")
@@ -140,6 +200,58 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_PREFERENCIA", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.PrevisaoSalva", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AtualizadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_ATUALIZACAO");
+
+                    b.Property<double?>("ChuvaMm")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("CHUVA_MM");
+
+                    b.Property<int>("CodigoTempo")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("CODIGO_TEMPO");
+
+                    b.Property<DateTime>("DataPrevisao")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_PREVISAO");
+
+                    b.Property<int>("LocalId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID_LOCAL");
+
+                    b.Property<int?>("ProbabilidadeChuva")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("PROB_CHUVA");
+
+                    b.Property<double?>("RajadaVentoKmh")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("RAJADA_VENTO");
+
+                    b.Property<double?>("TemperaturaMaxima")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("TEMP_MAXIMA");
+
+                    b.Property<double?>("TemperaturaMinima")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("TEMP_MINIMA");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocalId");
+
+                    b.ToTable("T_GS_PREVISAO", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.RegraAlerta", b =>
                 {
                     b.Property<int>("Id")
@@ -232,6 +344,17 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_USUARIO", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.Alerta", b =>
+                {
+                    b.HasOne("GaroAvisa.Domain.Entities.Local", "Local")
+                        .WithMany()
+                        .HasForeignKey("LocalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Local");
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Local", b =>
                 {
                     b.HasOne("GaroAvisa.Domain.Entities.Usuario", "Usuario")
@@ -252,6 +375,17 @@ namespace GaroAvisa.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.PrevisaoSalva", b =>
+                {
+                    b.HasOne("GaroAvisa.Domain.Entities.Local", "Local")
+                        .WithMany()
+                        .HasForeignKey("LocalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Local");
                 });
 #pragma warning restore 612, 618
         }

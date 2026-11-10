@@ -13,6 +13,8 @@ namespace GaroAvisa.Infrastructure.Data
         public DbSet<Local> Locais { get; set; }
         public DbSet<Preferencia> Preferencias { get; set; }
         public DbSet<RegraAlerta> RegrasAlerta { get; set; }
+        public DbSet<Alerta> Alertas { get; set; }
+        public DbSet<PrevisaoSalva> PrevisoesSalvas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +58,29 @@ namespace GaroAvisa.Infrastructure.Data
             modelBuilder.Entity<RegraAlerta>().Property(r => r.Descricao).HasColumnName("DESCRICAO");
             modelBuilder.Entity<RegraAlerta>().Property(r => r.Ativa).HasColumnName("ATIVA");
             modelBuilder.Entity<RegraAlerta>().Property(r => r.CriadoEm).HasColumnName("DT_CRIACAO");
+            modelBuilder.Entity<Alerta>().ToTable("T_GS_ALERTA");
+            modelBuilder.Entity<Alerta>().Property(a => a.Id).HasColumnName("ID");
+            modelBuilder.Entity<Alerta>().Property(a => a.LocalId).HasColumnName("ID_LOCAL");
+            modelBuilder.Entity<Alerta>().Property(a => a.DataPrevisao).HasColumnName("DT_PREVISAO");
+            modelBuilder.Entity<Alerta>().Property(a => a.Tipo).HasColumnName("TIPO");
+            modelBuilder.Entity<Alerta>().Property(a => a.Titulo).HasColumnName("TITULO");
+            modelBuilder.Entity<Alerta>().Property(a => a.Descricao).HasColumnName("DESCRICAO");
+            modelBuilder.Entity<Alerta>().Property(a => a.Gravidade).HasColumnName("GRAVIDADE");
+            modelBuilder.Entity<Alerta>().Property(a => a.ValorPrevisto).HasColumnName("VALOR_PREVISTO");
+            modelBuilder.Entity<Alerta>().Property(a => a.Lido).HasColumnName("LIDO");
+            modelBuilder.Entity<Alerta>().Property(a => a.CriadoEm).HasColumnName("DT_CRIACAO");
+
+            modelBuilder.Entity<PrevisaoSalva>().ToTable("T_GS_PREVISAO");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.Id).HasColumnName("ID");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.LocalId).HasColumnName("ID_LOCAL");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.DataPrevisao).HasColumnName("DT_PREVISAO");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.CodigoTempo).HasColumnName("CODIGO_TEMPO");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.TemperaturaMaxima).HasColumnName("TEMP_MAXIMA");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.TemperaturaMinima).HasColumnName("TEMP_MINIMA");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.ChuvaMm).HasColumnName("CHUVA_MM");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.ProbabilidadeChuva).HasColumnName("PROB_CHUVA");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.RajadaVentoKmh).HasColumnName("RAJADA_VENTO");
+            modelBuilder.Entity<PrevisaoSalva>().Property(p => p.AtualizadoEm).HasColumnName("DT_ATUALIZACAO");
 
             base.OnModelCreating(modelBuilder);
         }

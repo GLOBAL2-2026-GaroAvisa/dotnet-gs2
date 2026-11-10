@@ -11,5 +11,6 @@ namespace GaroAvisa.Domain.Interfaces
         Task AtualizarAsync(Local local);
         Task ExcluirAsync(Local local);
         Task RemoverPrincipalAsync(int usuarioId, int? ignorarId = null);
+        Task<List<Local>> ListarParaAlertasAsync();
     }
 }
