@@ -12,6 +12,7 @@ namespace GaroAvisa.Infrastructure.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Local> Locais { get; set; }
         public DbSet<Preferencia> Preferencias { get; set; }
+        public DbSet<RegraAlerta> RegrasAlerta { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +47,15 @@ namespace GaroAvisa.Infrastructure.Data
             modelBuilder.Entity<Preferencia>().Property(p => p.Compromissos).HasColumnName("COMPROMISSOS");
             modelBuilder.Entity<Preferencia>().Property(p => p.SilencioNoturno).HasColumnName("SILENCIO_NOTURNO");
             modelBuilder.Entity<Preferencia>().Property(p => p.AtualizadoEm).HasColumnName("DT_ATUALIZACAO");
+            modelBuilder.Entity<RegraAlerta>().ToTable("T_GS_REGRA_ALERTA");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Id).HasColumnName("ID");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Tipo).HasColumnName("TIPO");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Limite).HasColumnName("LIMITE");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Gravidade).HasColumnName("GRAVIDADE");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Titulo).HasColumnName("TITULO");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Descricao).HasColumnName("DESCRICAO");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.Ativa).HasColumnName("ATIVA");
+            modelBuilder.Entity<RegraAlerta>().Property(r => r.CriadoEm).HasColumnName("DT_CRIACAO");
 
             base.OnModelCreating(modelBuilder);
         }

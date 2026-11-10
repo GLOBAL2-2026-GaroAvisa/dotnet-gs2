@@ -140,6 +140,56 @@ namespace GaroAvisa.Infrastructure.Migrations
                     b.ToTable("T_GS_PREFERENCIA", (string)null);
                 });
 
+            modelBuilder.Entity("GaroAvisa.Domain.Entities.RegraAlerta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativa")
+                        .HasColumnType("NUMBER(1)")
+                        .HasColumnName("ATIVA");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("DT_CRIACAO");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("NVARCHAR2(300)")
+                        .HasColumnName("DESCRICAO");
+
+                    b.Property<string>("Gravidade")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("NVARCHAR2(10)")
+                        .HasColumnName("GRAVIDADE");
+
+                    b.Property<double>("Limite")
+                        .HasColumnType("BINARY_DOUBLE")
+                        .HasColumnName("LIMITE");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("NVARCHAR2(30)")
+                        .HasColumnName("TIPO");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("TITULO");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("T_GS_REGRA_ALERTA", (string)null);
+                });
+
             modelBuilder.Entity("GaroAvisa.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
