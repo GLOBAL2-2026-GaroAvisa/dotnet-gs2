@@ -43,7 +43,7 @@ namespace GaroAvisa.Api.Controllers
             catch (HttpRequestException)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    new { mensagem = "Não foi possível consultar a Open-Meteo agora. Tente novamente." });
+                    new { mensagem = "O serviço de previsão do tempo está indisponível no momento. Tente novamente em alguns minutos." });
             }
         }
     }

@@ -33,7 +33,7 @@ namespace GaroAvisa.Api.Controllers
         /// <summary>Busca uma regra de alerta pelo ID.</summary>
         /// <response code="200">Regra encontrada.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Regra não encontrada.</response>
+        /// <response code="404">Regra não encontrada. Confira o ID na lista de regras.</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(RegraAlertaRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -41,7 +41,7 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> Buscar(int id)
         {
             var regra = await _service.BuscarPorIdAsync(id);
-            return regra is null ? NotFound(new { mensagem = "Regra não encontrada." }) : Ok(regra);
+            return regra is null ? NotFound(new { mensagem = "Regra não encontrada. Confira o ID na lista de regras." }) : Ok(regra);
         }
 
         /// <summary>Cria uma regra de alerta. Somente ADMIN.</summary>
@@ -86,7 +86,7 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="403">Usuário sem permissão de administrador.</response>
-        /// <response code="404">Regra não encontrada.</response>
+        /// <response code="404">Regra não encontrada. Confira o ID na lista de regras.</response>
         /// <response code="409">Já existe regra com esse tipo e gravidade.</response>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "ADMIN")]
@@ -101,7 +101,7 @@ namespace GaroAvisa.Api.Controllers
             try
             {
                 var regra = await _service.AtualizarAsync(id, dto);
-                return regra is null ? NotFound(new { mensagem = "Regra não encontrada." }) : Ok(regra);
+                return regra is null ? NotFound(new { mensagem = "Regra não encontrada. Confira o ID na lista de regras." }) : Ok(regra);
             }
             catch (InvalidOperationException ex)
             {
@@ -110,20 +110,22 @@ namespace GaroAvisa.Api.Controllers
         }
 
         /// <summary>Exclui uma regra de alerta. Somente ADMIN.</summary>
-        /// <response code="204">Regra excluída.</response>
+        /// <response code="200">Regra excluída.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="403">Usuário sem permissão de administrador.</response>
-        /// <response code="404">Regra não encontrada.</response>
+        /// <response code="404">Regra não encontrada. Confira o ID na lista de regras.</response>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(int id)
         {
             var excluida = await _service.ExcluirAsync(id);
-            return excluida ? NoContent() : NotFound(new { mensagem = "Regra não encontrada." });
+            return excluida
+                ? Ok(new { mensagem = "Regra excluída com sucesso." })
+                : NotFound(new { mensagem = "Regra não encontrada. Confira o ID na lista de regras." });
         }
     }
 }

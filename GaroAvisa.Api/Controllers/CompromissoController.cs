@@ -34,7 +34,7 @@ namespace GaroAvisa.Api.Controllers
         /// <summary>Busca um compromisso do usuário logado pelo ID.</summary>
         /// <response code="200">Compromisso encontrado.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Compromisso não encontrado.</response>
+        /// <response code="404">Compromisso não encontrado. Confira o ID na lista dos seus compromissos.</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(CompromissoRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -42,13 +42,13 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> Buscar(int id)
         {
             var compromisso = await _service.BuscarPorIdAsync(id, ObterUsuarioId());
-            return compromisso is null ? NotFound(new { mensagem = "Compromisso não encontrado." }) : Ok(compromisso);
+            return compromisso is null ? NotFound(new { mensagem = "Compromisso não encontrado. Confira o ID na lista dos seus compromissos." }) : Ok(compromisso);
         }
 
         /// <summary>Mostra a previsão do tempo e os alertas do dia de um compromisso.</summary>
         /// <response code="200">Previsão do compromisso retornada.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Compromisso não encontrado.</response>
+        /// <response code="404">Compromisso não encontrado. Confira o ID na lista dos seus compromissos.</response>
         [HttpGet("{id:int}/previsao")]
         [ProducesResponseType(typeof(CompromissoPrevisaoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -56,7 +56,7 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> ObterPrevisao(int id)
         {
             var previsao = await _service.ObterPrevisaoAsync(id, ObterUsuarioId());
-            return previsao is null ? NotFound(new { mensagem = "Compromisso não encontrado." }) : Ok(previsao);
+            return previsao is null ? NotFound(new { mensagem = "Compromisso não encontrado. Confira o ID na lista dos seus compromissos." }) : Ok(previsao);
         }
 
         /// <summary>Cadastra um compromisso em um local do usuário logado.</summary>
@@ -69,7 +69,7 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="201">Compromisso criado.</response>
         /// <response code="400">Dados inválidos ou data no passado.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Local não encontrado.</response>
+        /// <response code="404">Local não encontrado. Confira o ID na lista dos seus locais.</response>
         /// <response code="422">Idempotency-Key já usado em outro pedido.</response>
         [HttpPost]
         [Idempotente]
@@ -86,7 +86,7 @@ namespace GaroAvisa.Api.Controllers
             {
                 var criado = await _service.CriarAsync(dto, ObterUsuarioId());
                 return criado is null
-                    ? NotFound(new { mensagem = "Local não encontrado." })
+                    ? NotFound(new { mensagem = "Local não encontrado. Confira o ID na lista dos seus locais." })
                     : CreatedAtAction(nameof(Buscar), new { id = criado.Id }, criado);
             }
             catch (ArgumentException ex)
@@ -99,7 +99,7 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="200">Compromisso atualizado.</response>
         /// <response code="400">Dados inválidos ou data no passado.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Compromisso ou local não encontrado.</response>
+        /// <response code="404">Compromisso ou local não encontrado. Confira os IDs informados.</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(CompromissoRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,7 +111,7 @@ namespace GaroAvisa.Api.Controllers
             {
                 var compromisso = await _service.AtualizarAsync(id, dto, ObterUsuarioId());
                 return compromisso is null
-                    ? NotFound(new { mensagem = "Compromisso ou local não encontrado." })
+                    ? NotFound(new { mensagem = "Compromisso ou local não encontrado. Confira os IDs informados." })
                     : Ok(compromisso);
             }
             catch (ArgumentException ex)
@@ -121,17 +121,19 @@ namespace GaroAvisa.Api.Controllers
         }
 
         /// <summary>Exclui um compromisso do usuário logado.</summary>
-        /// <response code="204">Compromisso excluído.</response>
+        /// <response code="200">Compromisso excluído.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Compromisso não encontrado.</response>
+        /// <response code="404">Compromisso não encontrado. Confira o ID na lista dos seus compromissos.</response>
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(int id)
         {
             var excluido = await _service.ExcluirAsync(id, ObterUsuarioId());
-            return excluido ? NoContent() : NotFound(new { mensagem = "Compromisso não encontrado." });
+            return excluido
+                ? Ok(new { mensagem = "Compromisso excluído com sucesso." })
+                : NotFound(new { mensagem = "Compromisso não encontrado. Confira o ID na lista dos seus compromissos." });
         }
 
         private int ObterUsuarioId()

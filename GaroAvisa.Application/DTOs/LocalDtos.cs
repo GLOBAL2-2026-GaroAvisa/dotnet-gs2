@@ -12,10 +12,10 @@ namespace GaroAvisa.Application.DTOs
         [MaxLength(120, ErrorMessage = "O nome pode ter até 120 caracteres.")]
         public string Nome { get; set; } = string.Empty;
 
-        [MaxLength(80)]
+        [MaxLength(80, ErrorMessage = "O estado pode ter até 80 caracteres.")]
         public string? Estado { get; set; }
 
-        [MaxLength(80)]
+        [MaxLength(80, ErrorMessage = "O país pode ter até 80 caracteres.")]
         public string? Pais { get; set; }
 
         [Range(-90, 90, ErrorMessage = "A latitude deve ficar entre -90 e 90.")]
@@ -24,7 +24,7 @@ namespace GaroAvisa.Application.DTOs
         [Range(-180, 180, ErrorMessage = "A longitude deve ficar entre -180 e 180.")]
         public double Longitude { get; set; }
 
-        [MaxLength(60)]
+        [MaxLength(60, ErrorMessage = "O fuso horário pode ter até 60 caracteres.")]
         public string Fuso { get; set; } = "America/Sao_Paulo";
 
         public bool Principal { get; set; }

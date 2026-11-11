@@ -41,7 +41,9 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> Buscar(int id)
         {
             var local = await _service.BuscarPorIdAsync(id, ObterUsuarioId());
-            return local is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(local);
+            return local is null
+                ? NotFound(new { mensagem = "Local não encontrado. Confira o ID na lista dos seus locais." })
+                : Ok(local);
         }
 
         /// <summary>Cadastra um novo local para o usuário logado.</summary>
@@ -92,7 +94,9 @@ namespace GaroAvisa.Api.Controllers
             try
             {
                 var local = await _service.AtualizarAsync(id, dto, ObterUsuarioId());
-                return local is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(local);
+                return local is null
+                    ? NotFound(new { mensagem = "Local não encontrado. Confira o ID na lista dos seus locais." })
+                    : Ok(local);
             }
             catch (InvalidOperationException ex)
             {
@@ -101,17 +105,19 @@ namespace GaroAvisa.Api.Controllers
         }
 
         /// <summary>Exclui um local do usuário logado.</summary>
-        /// <response code="204">Local excluído.</response>
+        /// <response code="200">Local excluído.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="404">Local não encontrado.</response>
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(int id)
         {
             var excluido = await _service.ExcluirAsync(id, ObterUsuarioId());
-            return excluido ? NoContent() : NotFound(new { mensagem = "Local não encontrado." });
+            return excluido
+                ? Ok(new { mensagem = "Local excluído com sucesso." })
+                : NotFound(new { mensagem = "Local não encontrado. Confira o ID na lista dos seus locais." });
         }
 
         private int ObterUsuarioId()

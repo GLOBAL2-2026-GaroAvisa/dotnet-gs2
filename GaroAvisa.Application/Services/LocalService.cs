@@ -32,10 +32,9 @@ namespace GaroAvisa.Application.Services
 
             if (await _repository.ApelidoExisteAsync(apelido, usuarioId))
             {
-                throw new InvalidOperationException("Você já tem um local com esse apelido.");
+                throw new InvalidOperationException("Você já tem um local com esse apelido. Escolha outro apelido.");
             }
 
-            // Cada usuário tem apenas um local principal.
             if (dto.Principal)
             {
                 await _repository.RemoverPrincipalAsync(usuarioId);
@@ -71,7 +70,7 @@ namespace GaroAvisa.Application.Services
 
             if (await _repository.ApelidoExisteAsync(apelido, usuarioId, id))
             {
-                throw new InvalidOperationException("Você já tem um local com esse apelido.");
+                throw new InvalidOperationException("Você já tem um local com esse apelido. Escolha outro apelido.");
             }
 
             if (dto.Principal)

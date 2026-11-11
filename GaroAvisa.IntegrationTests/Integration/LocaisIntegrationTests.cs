@@ -51,7 +51,7 @@ namespace GaroAvisa.IntegrationTests.Integration
 
             // excluir
             var exclusao = await client.DeleteAsync($"/api/Locais/{criado.Id}");
-            Assert.Equal(HttpStatusCode.NoContent, exclusao.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, exclusao.StatusCode);
 
             // depois de excluir, não encontra mais
             var buscaDepois = await client.GetAsync($"/api/Locais/{criado.Id}");

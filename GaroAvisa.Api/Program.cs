@@ -55,7 +55,18 @@ builder.Services.AddExceptionHandler<TratamentoErrosHandler>();
 builder.Services.AddProblemDetails();
 
 // Controllers e documentação
-builder.Services.AddControllers();
+// Erros de validação (400) com mensagem em português
+builder.Services.AddControllers(options =>
+    {
+        RespostasErro.TraduzirMensagensDeLeitura(options);
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = RespostasErro.Validacao;
+
+        // Deixa os erros sem corpo para o UseStatusCodePages escrever a mensagem em português
+        options.SuppressMapClientErrors = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Scalar: documento OpenAPI com o botão para informar o token
@@ -111,6 +122,9 @@ var app = builder.Build();
 
 // Deve ser o primeiro da lista, para pegar erros de todas as etapas seguintes.
 app.UseExceptionHandler();
+
+// Mensagem em português para respostas de erro sem corpo (401, 403, 404, 405, 415)
+app.UseStatusCodePages(RespostasErro.StatusSemCorpo);
 
 // A documentação fica disponível também na nuvem, para os testes da entrega.
 app.UseSwagger();

@@ -25,7 +25,7 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="200">Previsão retornada.</response>
         /// <response code="400">Quantidade de dias inválida.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Local não encontrado.</response>
+        /// <response code="404">Local não encontrado. Confira o ID na lista dos seus locais.</response>
         /// <response code="503">Open-Meteo indisponível no momento.</response>
         [HttpGet("{localId:int}")]
         [ProducesResponseType(typeof(PrevisaoLocalDto), StatusCodes.Status200OK)]
@@ -45,12 +45,12 @@ namespace GaroAvisa.Api.Controllers
             try
             {
                 var previsao = await _service.ObterPrevisaoDoLocalAsync(localId, usuarioId, dias);
-                return previsao is null ? NotFound(new { mensagem = "Local não encontrado." }) : Ok(previsao);
+                return previsao is null ? NotFound(new { mensagem = "Local não encontrado. Confira o ID na lista dos seus locais." }) : Ok(previsao);
             }
             catch (HttpRequestException)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    new { mensagem = "Não foi possível consultar a Open-Meteo agora. Tente novamente." });
+                    new { mensagem = "O serviço de previsão do tempo está indisponível no momento. Tente novamente em alguns minutos." });
             }
         }
     }

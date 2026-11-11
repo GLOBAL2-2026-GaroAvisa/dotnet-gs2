@@ -45,15 +45,15 @@ namespace GaroAvisa.Api.Controllers
         }
 
         /// <summary>Apaga as preferências do usuário logado e volta ao padrão.</summary>
-        /// <response code="204">Preferências restauradas para o padrão.</response>
+        /// <response code="200">Preferências excluídas e padrão restaurado.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RestaurarPadrao()
         {
             await _service.RestaurarPadraoAsync(ObterUsuarioId());
-            return NoContent();
+            return Ok(new { mensagem = "Preferências excluídas com sucesso. As configurações padrão foram restauradas." });
         }
 
         // Pega o ID do usuário que está dentro do token JWT.

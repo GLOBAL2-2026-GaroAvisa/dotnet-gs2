@@ -24,7 +24,7 @@ namespace GaroAvisa.Application.Services
 
             if (await _repository.EmailExisteAsync(email))
             {
-                throw new InvalidOperationException("Já existe uma conta com esse e-mail.");
+                throw new InvalidOperationException("Já existe uma conta com esse e-mail. Faça login ou use outro e-mail.");
             }
 
             var usuario = new Usuario

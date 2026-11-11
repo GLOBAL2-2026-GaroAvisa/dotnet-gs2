@@ -31,7 +31,7 @@ namespace GaroAvisa.Application.Services
             // Só pode existir uma regra para cada combinação de tipo e gravidade.
             if (await _repository.ExisteAsync(dto.Tipo, dto.Gravidade))
             {
-                throw new InvalidOperationException("Já existe uma regra com esse tipo e essa gravidade.");
+                throw new InvalidOperationException("Já existe uma regra com esse tipo e essa gravidade. Edite a regra existente ou escolha outra gravidade.");
             }
 
             var regra = new RegraAlerta
@@ -58,7 +58,7 @@ namespace GaroAvisa.Application.Services
 
             if (await _repository.ExisteAsync(dto.Tipo, dto.Gravidade, id))
             {
-                throw new InvalidOperationException("Já existe uma regra com esse tipo e essa gravidade.");
+                throw new InvalidOperationException("Já existe uma regra com esse tipo e essa gravidade. Edite a regra existente ou escolha outra gravidade.");
             }
 
             regra.Tipo = dto.Tipo;

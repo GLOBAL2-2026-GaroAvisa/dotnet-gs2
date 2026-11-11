@@ -33,7 +33,7 @@ namespace GaroAvisa.Api.Controllers
         /// <summary>Busca um alerta do usuário logado pelo ID.</summary>
         /// <response code="200">Alerta encontrado.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Alerta não encontrado.</response>
+        /// <response code="404">Alerta não encontrado. Confira o ID na lista dos seus alertas.</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(AlertaRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -41,13 +41,13 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> Buscar(int id)
         {
             var alerta = await _service.BuscarPorIdAsync(id, ObterUsuarioId());
-            return alerta is null ? NotFound(new { mensagem = "Alerta não encontrado." }) : Ok(alerta);
+            return alerta is null ? NotFound(new { mensagem = "Alerta não encontrado. Confira o ID na lista dos seus alertas." }) : Ok(alerta);
         }
 
         /// <summary>Marca um alerta do usuário logado como lido.</summary>
         /// <response code="200">Alerta marcado como lido.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Alerta não encontrado.</response>
+        /// <response code="404">Alerta não encontrado. Confira o ID na lista dos seus alertas.</response>
         [HttpPut("{id:int}/lido")]
         [ProducesResponseType(typeof(AlertaRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -55,21 +55,23 @@ namespace GaroAvisa.Api.Controllers
         public async Task<IActionResult> MarcarComoLido(int id)
         {
             var alerta = await _service.MarcarComoLidoAsync(id, ObterUsuarioId());
-            return alerta is null ? NotFound(new { mensagem = "Alerta não encontrado." }) : Ok(alerta);
+            return alerta is null ? NotFound(new { mensagem = "Alerta não encontrado. Confira o ID na lista dos seus alertas." }) : Ok(alerta);
         }
 
         /// <summary>Exclui um alerta do usuário logado.</summary>
-        /// <response code="204">Alerta excluído.</response>
+        /// <response code="200">Alerta excluído.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="404">Alerta não encontrado.</response>
+        /// <response code="404">Alerta não encontrado. Confira o ID na lista dos seus alertas.</response>
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(int id)
         {
             var excluido = await _service.ExcluirAsync(id, ObterUsuarioId());
-            return excluido ? NoContent() : NotFound(new { mensagem = "Alerta não encontrado." });
+            return excluido
+                ? Ok(new { mensagem = "Alerta excluído com sucesso." })
+                : NotFound(new { mensagem = "Alerta não encontrado. Confira o ID na lista dos seus alertas." });
         }
 
         /// <summary>Verifica a previsão de todos os locais e cria os alertas. Somente ADMIN.</summary>

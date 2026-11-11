@@ -153,7 +153,7 @@ namespace GaroAvisa.Application.Services
                 }
                 catch (HttpRequestException)
                 {
-                    resposta.Mensagem = "Não foi possível consultar a Open-Meteo agora.";
+                    resposta.Mensagem = "O serviço de previsão do tempo está indisponível no momento.";
                 }
             }
 
@@ -167,7 +167,7 @@ namespace GaroAvisa.Application.Services
         {
             if (dataHora < HojeEmBrasilia())
             {
-                throw new ArgumentException("A data do compromisso não pode estar no passado.");
+                throw new ArgumentException("A data do compromisso não pode estar no passado. Informe uma data a partir de hoje.");
             }
         }
 

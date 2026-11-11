@@ -47,7 +47,7 @@ namespace GaroAvisa.Api.Controllers
         /// <summary>Faz login com e-mail e senha e devolve o token JWT.</summary>
         /// <response code="200">Login realizado.</response>
         /// <response code="400">Dados inválidos.</response>
-        /// <response code="401">E-mail ou senha incorretos.</response>
+        /// <response code="401">E-mail ou senha incorretos. Confira os dados e tente novamente.</response>
         /// <response code="429">Muitas tentativas em pouco tempo.</response>
         [HttpPost("login")]
         [AllowAnonymous]
@@ -60,7 +60,7 @@ namespace GaroAvisa.Api.Controllers
         {
             var resposta = await _service.LoginAsync(dto);
             return resposta is null
-                ? Unauthorized(new { mensagem = "E-mail ou senha incorretos." })
+                ? Unauthorized(new { mensagem = "E-mail ou senha incorretos. Confira os dados e tente novamente." })
                 : Ok(resposta);
         }
 
