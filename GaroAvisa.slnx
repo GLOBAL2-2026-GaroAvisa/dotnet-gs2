@@ -3,4 +3,6 @@
   <Project Path="GaroAvisa.Application/GaroAvisa.Application.csproj" />
   <Project Path="GaroAvisa.Domain/GaroAvisa.Domain.csproj" />
   <Project Path="GaroAvisa.Infrastructure/GaroAvisa.Infrastructure.csproj" />
+  <Project Path="GaroAvisa.IntegrationTests/GaroAvisa.IntegrationTests.csproj" />
+  <Project Path="GaroAvisa.UnitTests/GaroAvisa.UnitTests.csproj" />
 </Solution>

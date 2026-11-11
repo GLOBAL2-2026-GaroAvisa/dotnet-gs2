@@ -3,6 +3,7 @@ using GaroAvisa.Application.Services;
 using GaroAvisa.Domain.Interfaces;
 using GaroAvisa.Infrastructure.Data;
 using GaroAvisa.Infrastructure.ExternalServices;
+using GaroAvisa.Infrastructure.HealthChecks;
 using GaroAvisa.Infrastructure.Repositories;
 using GaroAvisa.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,14 @@ namespace GaroAvisa.Infrastructure
             services.AddHttpClient<IOpenMeteoClient, OpenMeteoClient>();
 
             services.AddSingleton<ITokenService, TokenService>();
+
+            services.AddHealthChecks()
+                .AddDbContextCheck<AppDbContext>(
+                    name: "oracle",
+                    tags: new[] { "ready" })
+                .AddCheck<OpenMeteoHealthCheck>(
+                    name: "open-meteo",
+                    tags: new[] { "ready" });
 
             return services;
         }

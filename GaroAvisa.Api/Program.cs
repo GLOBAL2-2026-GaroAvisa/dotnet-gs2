@@ -1,7 +1,11 @@
 using System.Reflection;
 using System.Text;
 using GaroAvisa.Api.Extensions;
+using GaroAvisa.Api.Handlers;
 using GaroAvisa.Infrastructure;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -40,6 +44,15 @@ builder.Services.AddAuthorization();
 
 // Rate limiting: limita a quantidade de pedidos por minuto (responde 429 quando passa)
 builder.Services.AddRateLimitingGaroAvisa(builder.Configuration);
+
+// Health check de vivacidade (tag "live"): só confirma que a API está de pé.
+// Os de prontidão (Oracle e Open-Meteo) são registrados no AddInfrastructure.
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" });
+
+// Tratamento global de erros: resposta curta e amigável em vez do erro técnico
+builder.Services.AddExceptionHandler<TratamentoErrosHandler>();
+builder.Services.AddProblemDetails();
 
 // Controllers e documentação
 builder.Services.AddControllers();
@@ -96,6 +109,9 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Deve ser o primeiro da lista, para pegar erros de todas as etapas seguintes.
+app.UseExceptionHandler();
+
 // A documentação fica disponível também na nuvem, para os testes da entrega.
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -111,4 +127,20 @@ app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 
+// Liveness: responde 200 se a API não estiver travada.
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("live")
+}).DisableRateLimiting();
+
+// Readiness: verifica o Oracle e a Open-Meteo e mostra o resultado de cada um em JSON.
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready"),
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}).DisableRateLimiting();
+
 app.Run();
+
+// Necessário para os testes de integração (WebApplicationFactory<Program>) enxergarem a API.
+public partial class Program { }
