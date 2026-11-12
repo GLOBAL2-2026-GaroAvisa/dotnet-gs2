@@ -9,7 +9,6 @@ namespace GaroAvisa.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        // Relacionamento com Usuario: cada local pertence a um usuário
         public int UsuarioId { get; set; }
 
         [JsonIgnore]
@@ -18,7 +17,7 @@ namespace GaroAvisa.Domain.Entities
 
         [Required]
         [MaxLength(60)]
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(120)]

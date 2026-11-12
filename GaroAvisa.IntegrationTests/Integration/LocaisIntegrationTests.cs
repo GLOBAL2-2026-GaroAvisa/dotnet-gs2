@@ -36,17 +36,17 @@ namespace GaroAvisa.IntegrationTests.Integration
 
             // Act + Assert: criar
             var criado = await TestHelper.CriarLocalAsync(client);
-            Assert.Equal("Casa", criado.Apelido);
+            Assert.Equal("Casa", criado.Etiqueta);
 
             // buscar
             var busca = await client.GetAsync($"/api/Locais/{criado.Id}");
             Assert.Equal(HttpStatusCode.OK, busca.StatusCode);
 
             // atualizar
-            var atualizacao = await client.PutAsJsonAsync($"/api/Locais/{criado.Id}", new { apelido = "Minha casa", principal = true, receberAlertas = false });
+            var atualizacao = await client.PutAsJsonAsync($"/api/Locais/{criado.Id}", new { etiqueta = "Minha casa", principal = true, receberAlertas = false });
             Assert.Equal(HttpStatusCode.OK, atualizacao.StatusCode);
             var atualizado = await atualizacao.Content.ReadFromJsonAsync<LocalRespostaDto>();
-            Assert.Equal("Minha casa", atualizado!.Apelido);
+            Assert.Equal("Minha casa", atualizado!.Etiqueta);
             Assert.False(atualizado.ReceberAlertas);
 
             // excluir
@@ -63,7 +63,7 @@ namespace GaroAvisa.IntegrationTests.Integration
         {
             // Arrange
             var client = await TestHelper.CriarClienteLogadoAsync(_factory);
-            var localInvalido = new { apelido = "Lua", nome = "Lugar", latitude = 200, longitude = 0 };
+            var localInvalido = new { etiqueta = "Lua", nome = "Lugar", latitude = 200, longitude = 0 };
 
             // Act
             var response = await client.PostAsJsonAsync("/api/Locais", localInvalido);
@@ -92,7 +92,7 @@ namespace GaroAvisa.IntegrationTests.Integration
         {
             // Arrange
             var client = await TestHelper.CriarClienteLogadoAsync(_factory);
-            var local = new { apelido = "Escola", nome = "Mooca", latitude = -23.55, longitude = -46.60 };
+            var local = new { etiqueta = "Escola", nome = "Mooca", latitude = -23.55, longitude = -46.60 };
 
             HttpRequestMessage NovoPedido()
             {
@@ -126,13 +126,13 @@ namespace GaroAvisa.IntegrationTests.Integration
 
             var pedido1 = new HttpRequestMessage(HttpMethod.Post, "/api/Locais")
             {
-                Content = JsonContent.Create(new { apelido = "Escola", nome = "Mooca", latitude = -23.55, longitude = -46.60 })
+                Content = JsonContent.Create(new { etiqueta = "Escola", nome = "Mooca", latitude = -23.55, longitude = -46.60 })
             };
             pedido1.Headers.Add("Idempotency-Key", "chave-teste-002");
 
             var pedido2 = new HttpRequestMessage(HttpMethod.Post, "/api/Locais")
             {
-                Content = JsonContent.Create(new { apelido = "Academia", nome = "Tatuapé", latitude = -23.54, longitude = -46.57 })
+                Content = JsonContent.Create(new { etiqueta = "Academia", nome = "Tatuapé", latitude = -23.54, longitude = -46.57 })
             };
             pedido2.Headers.Add("Idempotency-Key", "chave-teste-002");
 

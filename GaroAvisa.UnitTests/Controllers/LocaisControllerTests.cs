@@ -27,7 +27,7 @@ namespace GaroAvisa.UnitTests.Controllers
         public async Task Buscar_LocalExiste_RetornaOk()
         {
             // Arrange
-            var local = new LocalRespostaDto { Id = 5, Apelido = "Casa" };
+            var local = new LocalRespostaDto { Id = 5, Etiqueta = "Casa" };
             _mockService.Setup(s => s.BuscarPorIdAsync(5, 1)).ReturnsAsync(local);
 
             // Act
@@ -36,7 +36,7 @@ namespace GaroAvisa.UnitTests.Controllers
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(resultado);
             var localRetornado = Assert.IsType<LocalRespostaDto>(okResult.Value);
-            Assert.Equal("Casa", localRetornado.Apelido);
+            Assert.Equal("Casa", localRetornado.Etiqueta);
         }
 
         [Fact]
@@ -53,14 +53,14 @@ namespace GaroAvisa.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task Criar_ApelidoRepetido_RetornaConflict()
+        public async Task Criar_EtiquetaRepetida_RetornaConflict()
         {
             // Arrange
             _mockService.Setup(s => s.CriarAsync(It.IsAny<CriarLocalDto>(), 1))
-                .ThrowsAsync(new InvalidOperationException("Você já tem um local com esse apelido."));
+                .ThrowsAsync(new InvalidOperationException("Você já tem um local com essa etiqueta."));
 
             // Act
-            var resultado = await _controller.Criar(new CriarLocalDto { Apelido = "Casa", Nome = "Tatuapé" }, null);
+            var resultado = await _controller.Criar(new CriarLocalDto { Etiqueta = "Casa", Nome = "Tatuapé" }, null);
 
             // Assert
             Assert.IsType<ConflictObjectResult>(resultado);

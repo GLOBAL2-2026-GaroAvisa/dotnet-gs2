@@ -45,11 +45,11 @@ namespace GaroAvisa.IntegrationTests.FactoryFixture
             return client;
         }
 
-        public static async Task<LocalRespostaDto> CriarLocalAsync(HttpClient client, string apelido = "Casa")
+        public static async Task<LocalRespostaDto> CriarLocalAsync(HttpClient client, string etiqueta = "Casa")
         {
             var resposta = await client.PostAsJsonAsync("/api/Locais", new
             {
-                apelido,
+                etiqueta,
                 nome = "Tatuapé",
                 estado = "SP",
                 pais = "Brasil",

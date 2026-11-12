@@ -31,7 +31,7 @@ namespace GaroAvisa.Infrastructure.Data
             modelBuilder.Entity<Local>().ToTable("T_GS_LOCAL");
             modelBuilder.Entity<Local>().Property(l => l.Id).HasColumnName("ID");
             modelBuilder.Entity<Local>().Property(l => l.UsuarioId).HasColumnName("ID_USUARIO");
-            modelBuilder.Entity<Local>().Property(l => l.Apelido).HasColumnName("APELIDO");
+            modelBuilder.Entity<Local>().Property(l => l.Etiqueta).HasColumnName("ETIQUETA");
             modelBuilder.Entity<Local>().Property(l => l.Nome).HasColumnName("NOME");
             modelBuilder.Entity<Local>().Property(l => l.Estado).HasColumnName("ESTADO");
             modelBuilder.Entity<Local>().Property(l => l.Pais).HasColumnName("PAIS");

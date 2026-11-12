@@ -19,7 +19,7 @@ namespace GaroAvisa.Infrastructure.Repositories
             return await _context.Locais
                 .Where(l => l.UsuarioId == usuarioId)
                 .OrderByDescending(l => l.Principal)
-                .ThenBy(l => l.Apelido)
+                .ThenBy(l => l.Etiqueta)
                 .ToListAsync();
         }
 
@@ -29,11 +29,11 @@ namespace GaroAvisa.Infrastructure.Repositories
                 .FirstOrDefaultAsync(l => l.Id == id && l.UsuarioId == usuarioId);
         }
 
-        public async Task<bool> ApelidoExisteAsync(string apelido, int usuarioId, int? ignorarId = null)
+        public async Task<bool> EtiquetaExisteAsync(string etiqueta, int usuarioId, int? ignorarId = null)
         {
             return await _context.Locais.AnyAsync(l =>
                 l.UsuarioId == usuarioId &&
-                l.Apelido == apelido &&
+                l.Etiqueta == etiqueta &&
                 (ignorarId == null || l.Id != ignorarId));
         }
 

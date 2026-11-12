@@ -17,7 +17,7 @@ namespace GaroAvisa.UnitTests.Services
         private readonly Mock<IOpenMeteoClient> _mockOpenMeteo = new();
         private readonly AlertaService _service;
 
-        private readonly Local _casa = new Local { Id = 1, UsuarioId = 7, Apelido = "Casa", Latitude = -23.5, Longitude = -46.5, ReceberAlertas = true };
+        private readonly Local _casa = new Local { Id = 1, UsuarioId = 7, Etiqueta = "Casa", Latitude = -23.5, Longitude = -46.5, ReceberAlertas = true };
 
         public AlertaServiceTests()
         {

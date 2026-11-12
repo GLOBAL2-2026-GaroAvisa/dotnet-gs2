@@ -6,7 +6,7 @@ namespace GaroAvisa.Application.DTOs
     {
         [Required(ErrorMessage = "Informe a etiqueta do local.")]
         [MaxLength(60, ErrorMessage = "A etiqueta pode ter até 60 caracteres.")]
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Informe o nome do lugar.")]
         [MaxLength(120, ErrorMessage = "O nome pode ter até 120 caracteres.")]
@@ -35,7 +35,7 @@ namespace GaroAvisa.Application.DTOs
     {
         [Required(ErrorMessage = "Informe a etiqueta do local.")]
         [MaxLength(60, ErrorMessage = "A etiqueta pode ter até 60 caracteres.")]
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
 
         public bool Principal { get; set; }
         public bool ReceberAlertas { get; set; } = true;
@@ -44,7 +44,7 @@ namespace GaroAvisa.Application.DTOs
     public class LocalRespostaDto
     {
         public int Id { get; set; }
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
         public string? Estado { get; set; }
         public string? Pais { get; set; }

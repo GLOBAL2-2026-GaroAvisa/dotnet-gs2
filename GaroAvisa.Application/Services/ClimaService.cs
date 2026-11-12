@@ -33,7 +33,7 @@ namespace GaroAvisa.Application.Services
             return new PrevisaoLocalDto
             {
                 LocalId = local.Id,
-                Apelido = local.Apelido,
+                Etiqueta = local.Etiqueta,
                 Nome = local.Nome,
                 Dias = previsao
             };

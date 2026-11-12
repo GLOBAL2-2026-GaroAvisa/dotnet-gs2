@@ -28,11 +28,11 @@ namespace GaroAvisa.Application.Services
 
         public async Task<LocalRespostaDto> CriarAsync(CriarLocalDto dto, int usuarioId)
         {
-            var apelido = dto.Apelido.Trim();
+            var etiqueta = dto.Etiqueta.Trim();
 
-            if (await _repository.ApelidoExisteAsync(apelido, usuarioId))
+            if (await _repository.EtiquetaExisteAsync(etiqueta, usuarioId))
             {
-                throw new InvalidOperationException("Você já tem um local com esse apelido. Escolha outro apelido.");
+                throw new InvalidOperationException("Você já tem um local com essa etiqueta. Escolha outra etiqueta.");
             }
 
             if (dto.Principal)
@@ -43,7 +43,7 @@ namespace GaroAvisa.Application.Services
             var local = new Local
             {
                 UsuarioId = usuarioId,
-                Apelido = apelido,
+                Etiqueta = etiqueta,
                 Nome = dto.Nome.Trim(),
                 Estado = dto.Estado,
                 Pais = dto.Pais,
@@ -66,11 +66,11 @@ namespace GaroAvisa.Application.Services
                 return null;
             }
 
-            var apelido = dto.Apelido.Trim();
+            var etiqueta = dto.Etiqueta.Trim();
 
-            if (await _repository.ApelidoExisteAsync(apelido, usuarioId, id))
+            if (await _repository.EtiquetaExisteAsync(etiqueta, usuarioId, id))
             {
-                throw new InvalidOperationException("Você já tem um local com esse apelido. Escolha outro apelido.");
+                throw new InvalidOperationException("Você já tem um local com essa etiqueta. Escolha outra etiqueta.");
             }
 
             if (dto.Principal)
@@ -78,7 +78,7 @@ namespace GaroAvisa.Application.Services
                 await _repository.RemoverPrincipalAsync(usuarioId, id);
             }
 
-            local.Apelido = apelido;
+            local.Etiqueta = etiqueta;
             local.Principal = dto.Principal;
             local.ReceberAlertas = dto.ReceberAlertas;
 
@@ -103,7 +103,7 @@ namespace GaroAvisa.Application.Services
             return new LocalRespostaDto
             {
                 Id = local.Id,
-                Apelido = local.Apelido,
+                Etiqueta = local.Etiqueta,
                 Nome = local.Nome,
                 Estado = local.Estado,
                 Pais = local.Pais,

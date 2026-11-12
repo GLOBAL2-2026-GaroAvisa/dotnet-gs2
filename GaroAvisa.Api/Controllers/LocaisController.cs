@@ -53,7 +53,7 @@ namespace GaroAvisa.Api.Controllers
         /// <response code="201">Local criado.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">Token ausente ou inválido.</response>
-        /// <response code="409">Apelido já utilizado.</response>
+        /// <response code="409">Etiqueta já utilizada.</response>
         /// <response code="422">Idempotency-Key já usado em outro pedido.</response>
         [HttpPost]
         [Idempotente]
@@ -77,12 +77,12 @@ namespace GaroAvisa.Api.Controllers
             }
         }
 
-        /// <summary>Atualiza apelido, local principal e recebimento de alertas.</summary>
+        /// <summary>Atualiza etiqueta, local principal e recebimento de alertas.</summary>
         /// <response code="200">Local atualizado.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="401">Token ausente ou inválido.</response>
         /// <response code="404">Local não encontrado.</response>
-        /// <response code="409">Apelido já utilizado.</response>
+        /// <response code="409">Etiqueta já utilizada.</response>
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(LocalRespostaDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

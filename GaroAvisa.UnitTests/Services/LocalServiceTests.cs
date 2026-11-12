@@ -18,11 +18,11 @@ namespace GaroAvisa.UnitTests.Services
         }
 
         [Fact]
-        public async Task Criar_ApelidoRepetido_LancaInvalidOperationException()
+        public async Task Criar_EtiquetaRepetida_LancaInvalidOperationException()
         {
             // Arrange
-            _mockRepository.Setup(r => r.ApelidoExisteAsync("Casa", 1, null)).ReturnsAsync(true);
-            var dto = new CriarLocalDto { Apelido = "Casa", Nome = "Tatuapé", Latitude = -23.5, Longitude = -46.5 };
+            _mockRepository.Setup(r => r.EtiquetaExisteAsync("Casa", 1, null)).ReturnsAsync(true);
+            var dto = new CriarLocalDto { Etiqueta = "Casa", Nome = "Tatuapé", Latitude = -23.5, Longitude = -46.5 };
 
             // Act + Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() => _service.CriarAsync(dto, 1));
@@ -32,9 +32,9 @@ namespace GaroAvisa.UnitTests.Services
         public async Task Criar_LocalPrincipal_TiraPrincipalDosOutrosLocais()
         {
             // Arrange
-            _mockRepository.Setup(r => r.ApelidoExisteAsync("Casa", 1, null)).ReturnsAsync(false);
+            _mockRepository.Setup(r => r.EtiquetaExisteAsync("Casa", 1, null)).ReturnsAsync(false);
             _mockRepository.Setup(r => r.CriarAsync(It.IsAny<Local>())).ReturnsAsync((Local l) => l);
-            var dto = new CriarLocalDto { Apelido = "Casa", Nome = "Tatuapé", Latitude = -23.5, Longitude = -46.5, Principal = true };
+            var dto = new CriarLocalDto { Etiqueta = "Casa", Nome = "Tatuapé", Latitude = -23.5, Longitude = -46.5, Principal = true };
 
             // Act
             var criado = await _service.CriarAsync(dto, 1);

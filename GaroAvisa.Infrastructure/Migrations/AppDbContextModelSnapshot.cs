@@ -125,12 +125,6 @@ namespace GaroAvisa.Infrastructure.Migrations
 
                     OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Apelido")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("NVARCHAR2(60)")
-                        .HasColumnName("APELIDO");
-
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("TIMESTAMP(7)")
                         .HasColumnName("DT_CRIACAO");
@@ -139,6 +133,12 @@ namespace GaroAvisa.Infrastructure.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("NVARCHAR2(80)")
                         .HasColumnName("ESTADO");
+
+                    b.Property<string>("Etiqueta")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("NVARCHAR2(60)")
+                        .HasColumnName("ETIQUETA");
 
                     b.Property<string>("Fuso")
                         .IsRequired()

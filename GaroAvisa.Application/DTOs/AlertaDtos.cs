@@ -4,7 +4,7 @@ namespace GaroAvisa.Application.DTOs
     {
         public int Id { get; set; }
         public int LocalId { get; set; }
-        public string LocalApelido { get; set; } = string.Empty;
+        public string LocalEtiqueta { get; set; } = string.Empty;
         public string DataPrevisao { get; set; } = string.Empty;
         public string Tipo { get; set; } = string.Empty;
         public string Titulo { get; set; } = string.Empty;
@@ -27,7 +27,7 @@ namespace GaroAvisa.Application.DTOs
     public class ResumoLocalDto
     {
         public int LocalId { get; set; }
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
 
         public PrevisaoDiaDto? PrevisaoHoje { get; set; }

@@ -37,10 +37,10 @@ namespace GaroAvisa.Application.Services
         public async Task<List<AlertaRespostaDto>> ListarAsync(int usuarioId, bool somenteNaoLidos)
         {
             var locais = await _localRepository.ListarAsync(usuarioId);
-            var apelidos = locais.ToDictionary(l => l.Id, l => l.Apelido);
+            var etiquetas = locais.ToDictionary(l => l.Id, l => l.Etiqueta);
 
-            var alertas = await _alertaRepository.ListarPorLocaisAsync(apelidos.Keys.ToList(), somenteNaoLidos);
-            return alertas.Select(a => ParaResposta(a, apelidos[a.LocalId])).ToList();
+            var alertas = await _alertaRepository.ListarPorLocaisAsync(etiquetas.Keys.ToList(), somenteNaoLidos);
+            return alertas.Select(a => ParaResposta(a, etiquetas[a.LocalId])).ToList();
         }
 
         public async Task<AlertaRespostaDto?> BuscarPorIdAsync(int id, int usuarioId)
@@ -57,7 +57,7 @@ namespace GaroAvisa.Application.Services
                 return null;
             }
 
-            return ParaResposta(alerta, local.Apelido);
+            return ParaResposta(alerta, local.Etiqueta);
         }
 
         public async Task<AlertaRespostaDto?> MarcarComoLidoAsync(int id, int usuarioId)
@@ -76,7 +76,7 @@ namespace GaroAvisa.Application.Services
 
             alerta.Lido = true;
             await _alertaRepository.AtualizarAsync(alerta);
-            return ParaResposta(alerta, local.Apelido);
+            return ParaResposta(alerta, local.Etiqueta);
         }
 
         public async Task<bool> ExcluirAsync(int id, int usuarioId)
@@ -220,13 +220,13 @@ namespace GaroAvisa.Application.Services
             salva.RajadaVentoKmh = dia.RajadaVentoKmh;
         }
 
-        public static AlertaRespostaDto ParaResposta(Alerta alerta, string localApelido)
+        public static AlertaRespostaDto ParaResposta(Alerta alerta, string localEtiqueta)
         {
             return new AlertaRespostaDto
             {
                 Id = alerta.Id,
                 LocalId = alerta.LocalId,
-                LocalApelido = localApelido,
+                LocalEtiqueta = localEtiqueta,
                 DataPrevisao = alerta.DataPrevisao.ToString("yyyy-MM-dd"),
                 Tipo = alerta.Tipo,
                 Titulo = alerta.Titulo,

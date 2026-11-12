@@ -27,13 +27,13 @@ namespace GaroAvisa.Application.Services
         public async Task<List<CompromissoRespostaDto>> ListarAsync(int usuarioId, int? localId)
         {
             var locais = await _localRepository.ListarAsync(usuarioId);
-            var apelidos = locais.ToDictionary(l => l.Id, l => l.Apelido);
+            var etiquetas = locais.ToDictionary(l => l.Id, l => l.Etiqueta);
 
-            var compromissos = await _repository.ListarPorLocaisAsync(apelidos.Keys.ToList());
+            var compromissos = await _repository.ListarPorLocaisAsync(etiquetas.Keys.ToList());
 
             return compromissos
                 .Where(c => localId == null || c.LocalId == localId)
-                .Select(c => ParaResposta(c, apelidos[c.LocalId]))
+                .Select(c => ParaResposta(c, etiquetas[c.LocalId]))
                 .ToList();
         }
 
@@ -51,7 +51,7 @@ namespace GaroAvisa.Application.Services
                 return null;
             }
 
-            return ParaResposta(compromisso, local.Apelido);
+            return ParaResposta(compromisso, local.Etiqueta);
         }
 
         public async Task<CompromissoRespostaDto?> CriarAsync(SalvarCompromissoDto dto, int usuarioId)
@@ -72,7 +72,7 @@ namespace GaroAvisa.Application.Services
             };
 
             var criado = await _repository.CriarAsync(compromisso);
-            return ParaResposta(criado, local.Apelido);
+            return ParaResposta(criado, local.Etiqueta);
         }
 
         public async Task<CompromissoRespostaDto?> AtualizarAsync(int id, SalvarCompromissoDto dto, int usuarioId)
@@ -97,7 +97,7 @@ namespace GaroAvisa.Application.Services
             compromisso.DataHora = dto.DataHora.Value;
 
             await _repository.AtualizarAsync(compromisso);
-            return ParaResposta(compromisso, localNovo.Apelido);
+            return ParaResposta(compromisso, localNovo.Etiqueta);
         }
 
         public async Task<bool> ExcluirAsync(int id, int usuarioId)
@@ -134,7 +134,7 @@ namespace GaroAvisa.Application.Services
 
             var resposta = new CompromissoPrevisaoDto
             {
-                Compromisso = ParaResposta(compromisso, local.Apelido)
+                Compromisso = ParaResposta(compromisso, local.Etiqueta)
             };
 
             var dataCompromisso = compromisso.DataHora.Date;
@@ -158,7 +158,7 @@ namespace GaroAvisa.Application.Services
             }
 
             var alertas = await _alertaRepository.ListarPorLocalEDataAsync(local.Id, dataCompromisso);
-            resposta.AlertasDoDia = alertas.Select(a => AlertaService.ParaResposta(a, local.Apelido)).ToList();
+            resposta.AlertasDoDia = alertas.Select(a => AlertaService.ParaResposta(a, local.Etiqueta)).ToList();
 
             return resposta;
         }
@@ -176,13 +176,13 @@ namespace GaroAvisa.Application.Services
             return DateTime.UtcNow.AddHours(-3).Date;
         }
 
-        private static CompromissoRespostaDto ParaResposta(Compromisso compromisso, string localApelido)
+        private static CompromissoRespostaDto ParaResposta(Compromisso compromisso, string localEtiqueta)
         {
             return new CompromissoRespostaDto
             {
                 Id = compromisso.Id,
                 LocalId = compromisso.LocalId,
-                LocalApelido = localApelido,
+                LocalEtiqueta = localEtiqueta,
                 Nome = compromisso.Nome,
                 DataHora = compromisso.DataHora,
                 CriadoEm = compromisso.CriadoEm

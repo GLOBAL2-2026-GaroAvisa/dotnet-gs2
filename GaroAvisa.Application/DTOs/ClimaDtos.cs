@@ -25,7 +25,7 @@ namespace GaroAvisa.Application.DTOs
     public class PrevisaoLocalDto
     {
         public int LocalId { get; set; }
-        public string Apelido { get; set; } = string.Empty;
+        public string Etiqueta { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
         public List<PrevisaoDiaDto> Dias { get; set; } = new();
     }

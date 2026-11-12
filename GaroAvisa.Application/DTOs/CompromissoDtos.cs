@@ -19,7 +19,7 @@ namespace GaroAvisa.Application.DTOs
     {
         public int Id { get; set; }
         public int LocalId { get; set; }
-        public string LocalApelido { get; set; } = string.Empty;
+        public string LocalEtiqueta { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
         public DateTime DataHora { get; set; }
         public DateTime CriadoEm { get; set; }

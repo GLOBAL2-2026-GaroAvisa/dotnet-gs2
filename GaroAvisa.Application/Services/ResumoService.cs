@@ -43,7 +43,7 @@ namespace GaroAvisa.Application.Services
                 var item = new ResumoLocalDto
                 {
                     LocalId = local.Id,
-                    Apelido = local.Apelido,
+                    Etiqueta = local.Etiqueta,
                     Nome = local.Nome
                 };
 
@@ -62,7 +62,7 @@ namespace GaroAvisa.Application.Services
                 }
 
                 var alertas = await _alertaRepository.ListarPorLocalEDataAsync(local.Id, hoje);
-                item.AlertasHoje = alertas.Select(a => AlertaService.ParaResposta(a, local.Apelido)).ToList();
+                item.AlertasHoje = alertas.Select(a => AlertaService.ParaResposta(a, local.Etiqueta)).ToList();
 
                 resumo.TotalAlertasHoje += item.AlertasHoje.Count;
                 resumo.Locais.Add(item);
