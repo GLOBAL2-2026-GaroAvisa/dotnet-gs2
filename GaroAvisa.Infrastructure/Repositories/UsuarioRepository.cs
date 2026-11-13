@@ -35,5 +35,16 @@ namespace GaroAvisa.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return usuario;
         }
+
+        public async Task ExcluirAsync(Usuario usuario)
+        {
+            var registros = await _context.RegistrosIdempotencia
+                .Where(r => r.UsuarioId == usuario.Id)
+                .ToListAsync();
+
+            _context.RegistrosIdempotencia.RemoveRange(registros);
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace GaroAvisa.Application.Interfaces
         Task<LoginRespostaDto> CadastrarAsync(CadastroUsuarioDto dto);
         Task<LoginRespostaDto?> LoginAsync(LoginDto dto);
         Task<UsuarioRespostaDto?> BuscarPorIdAsync(int id);
+        Task<bool> ExcluirContaAsync(int id);
     }
 }

@@ -63,6 +63,23 @@ namespace GaroAvisa.Application.Services
             return usuario is null ? null : ParaResposta(usuario);
         }
 
+        public async Task<bool> ExcluirContaAsync(int id)
+        {
+            var usuario = await _repository.BuscarPorIdAsync(id);
+            if (usuario is null)
+            {
+                return false;
+            }
+
+            if (usuario.Tipo == "ADMIN")
+            {
+                throw new InvalidOperationException("Contas de administrador não podem ser excluídas pela API, para o sistema não ficar sem administrador.");
+            }
+
+            await _repository.ExcluirAsync(usuario);
+            return true;
+        }
+
         private LoginRespostaDto GerarResposta(Usuario usuario)
         {
             return new LoginRespostaDto

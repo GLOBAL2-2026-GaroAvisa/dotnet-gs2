@@ -1,6 +1,6 @@
 # GaroAvisa API
 
-API em .NET do **GaroAvisa**, solução CitizenTech da Global Solution 2026/2 (FIAP).
+API em .NET do **GaroAvisa**, solução CitizenTech da Global Solution 2026/2.
 
 ## Índice
 
@@ -30,7 +30,7 @@ O **GaroAvisa** faz esse trabalho pelo usuário. Ele cadastra os lugares que faz
 
 ### O que a API faz
 
-- **Conta e acesso seguro:** cadastro e login com token JWT. A senha é guardada protegida por hash, nunca em texto e cada usuário só vê os próprios dados.
+- **Conta e acesso seguro:** cadastro e login com token JWT. A senha é guardada protegida por hash, nunca em texto, e cada usuário só vê os próprios dados. O usuário também pode excluir a própria conta, o que apaga todos os dados dele. Contas de administrador não podem ser excluídas pela API, para o sistema nunca ficar sem administrador.
 - **Busca de lugares:** o usuário digita o nome de um bairro ou cidade e a API busca na Open-Meteo as coordenadas e o fuso horário. A busca funciona para qualquer lugar do mundo.
 - **Meus locais:** o usuário salva seus lugares com uma **etiqueta** (Casa, Trabalho, Escola), escolhe um **local principal** e decide em quais locais quer receber alertas.
 - **Previsão explicada:** previsão de 1 a 7 dias para cada local, com o código do tempo traduzido para o português (por exemplo, "Chuva forte" ou "Trovoada"), temperaturas máxima e mínima, chuva em milímetros, chance de chuva e rajada de vento.
@@ -174,7 +174,7 @@ Os testes usam banco em memória e uma Open-Meteo falsa, então **não precisam*
 | 2 | **JWT**: autenticação e autorização | `TokenService.cs`, `AddJwtBearer` no `Program.cs`, `[Authorize]` e `[Authorize(Roles = "ADMIN")]` | Sem token: `401`. Usuário comum em rota de admin: `403` |
 | 3 | **Idempotência** | `IdempotenciaFilter.cs`, atributo `[Idempotente]` e tabela `T_GS_IDEMPOTENCIA` | Repetir um POST com o mesmo `Idempotency-Key`: mesma resposta e cabeçalho `Idempotent-Replay: true`. Mesma chave com dados diferentes: `422` |
 | 4 | **Rate Limiting** com HTTP 429 | `RateLimitingExtensions.cs` | Mais de 5 logins em 1 minuto: `429` com cabeçalho `Retry-After` |
-| 5 | **Testes unitários e de integração** com xUnit | `GaroAvisa.UnitTests` e `GaroAvisa.IntegrationTests` | `dotnet test`: 42 testes aprovados |
+| 5 | **Testes unitários e de integração** com xUnit | `GaroAvisa.UnitTests` e `GaroAvisa.IntegrationTests` | `dotnet test`: 47 testes aprovados |
 | 6 | **Health Checks** da API, do banco e do serviço externo | `Program.cs` e `OpenMeteoHealthCheck.cs` | `/health/live` e `/health/ready` (`oracle` e `open-meteo`) |
 
 ### Detalhes
@@ -216,7 +216,7 @@ Os health checks não entram no limite, para o monitoramento nunca ser bloqueado
 
 | Perfil | O que pode fazer |
 |---|---|
-| **USUARIO** | Gerenciar os próprios locais, compromissos e preferências; ver previsão, alertas e resumo dos seus locais; consultar as regras de alerta |
+| **USUARIO** | Gerenciar os próprios locais, compromissos e preferências; excluir a própria conta; ver previsão, alertas e resumo dos seus locais; consultar as regras de alerta |
 | **ADMIN** | Tudo o que o usuário faz, mais criar, editar e excluir **regras de alerta** e disparar a **verificação de alertas** |
 
 Toda conta é criada como **USUARIO**. Por segurança, a API não permite que alguém vire administrador sozinho. Para promover uma conta, rode no Oracle:
@@ -242,6 +242,7 @@ Todos os endpoints, exceto cadastro, login e health checks, exigem o token no ca
 | POST | `/api/Auth/cadastro` | Cria uma conta e já devolve o token |
 | POST | `/api/Auth/login` | Faz login e devolve o token JWT |
 | GET | `/api/Auth/me` | Mostra os dados do usuário logado |
+| DELETE | `/api/Auth/me` | Exclui a conta do usuário logado e todos os dados dele (contas ADMIN recebem `403`) |
 
 ### Lugares
 | Método | Rota | Descrição |
@@ -355,6 +356,8 @@ Copie o `token` da resposta, clique em **Authorize** e cole.
   "dataHora": "2026-11-20T09:00:00"
 }
 ```
+Use o `id` do local criado no passo 3 e troque a data por **um dos próximos dias**: a data não pode estar no passado, e a previsão só fica disponível nos 7 dias antes do compromisso.
+
 Depois, `GET /api/Compromissos/{id}/previsao` mostra o tempo e os alertas do dia do compromisso.
 
 **6. Ajustar as preferências**
@@ -459,9 +462,18 @@ Como funcionam os campos:
 
 Gravidades: `BAIXA`, `MEDIA` e `ALTA`. Não pode haver duas regras com o mesmo tipo e a mesma gravidade. Se duas regras do mesmo tipo dispararem, vale a mais grave.
 
-**8. Gerar e ver os alertas (com a conta ADMIN)**
+**8. Gerar os alertas (com a conta ADMIN)**
 
-`POST /api/Alertas/verificar` verifica a previsão de hoje e de amanhã de todos os locais e cria os alertas. Com a regra de teste, `alertasCriados` vem maior que 0. Depois, `GET /api/Alertas` e `GET /api/Resumo` mostram os alertas criados.
+`POST /api/Alertas/verificar` verifica a previsão de hoje e de amanhã de todos os locais de todos os usuários e cria os alertas. Com a regra de teste, `alertasCriados` vem maior que 0.
+
+**9. Ver os alertas (de volta com a conta do passo 1)**
+
+Os alertas pertencem aos locais de quem os cadastrou, e cada usuário só vê os próprios dados. Por isso, faça login de novo com a conta criada no passo 1 e clique em **Authorize** com o novo token.
+
+- `GET /api/Alertas` lista os alertas dos seus locais.
+- `PUT /api/Alertas/{id}/lido` marca um alerta como lido.
+- `GET /api/Resumo` mostra a previsão e os alertas de hoje de cada local.
+- `GET /api/Compromissos/{id}/previsao` mostra a previsão e os alertas do dia do compromisso do passo 5.
 
 ---
 
@@ -471,12 +483,12 @@ Gravidades: `BAIXA`, `MEDIA` e `ALTA`. Não pode haver duas regras com o mesmo t
 dotnet test
 ```
 
-**42 testes**, todos aprovados:
+**47 testes**, todos aprovados:
 
 | Projeto | O que testa |
 |---|---|
-| **GaroAvisa.UnitTests** | Regras de negócio com Moq: cadastro com senha em hash, e-mail repetido, login, etiqueta repetida, local principal, criação de alertas sem duplicar, preferência desligada, Open-Meteo fora do ar, escolha da regra mais grave, mudança brusca na previsão e tradução dos códigos do tempo |
-| **GaroAvisa.IntegrationTests** | Endpoints de verdade com `WebApplicationFactory` e banco em memória: cadastro, login, `401` sem token, `403` para usuário comum, CRUD de locais, acesso a dados de outro usuário, idempotência (replay e `422`), previsão, verificação de alertas, rate limiting (`429`) e health check |
+| **GaroAvisa.UnitTests** | Regras de negócio com Moq: cadastro com senha em hash, e-mail repetido, login, exclusão de conta, etiqueta repetida, local principal, criação de alertas sem duplicar, preferência desligada, Open-Meteo fora do ar, escolha da regra mais grave, mudança brusca na previsão e tradução dos códigos do tempo |
+| **GaroAvisa.IntegrationTests** | Endpoints de verdade com `WebApplicationFactory` e banco em memória: cadastro, login, exclusão de conta, `401` sem token, `403` para usuário comum, CRUD de locais, acesso a dados de outro usuário, idempotência (replay e `422`), previsão, verificação de alertas, rate limiting (`429`) e health check |
 
 ---
 

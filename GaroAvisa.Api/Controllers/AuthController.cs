@@ -77,5 +77,34 @@ namespace GaroAvisa.Api.Controllers
             var usuario = await _service.BuscarPorIdAsync(usuarioId);
             return usuario is null ? Unauthorized() : Ok(usuario);
         }
+
+        /// <summary>Exclui a conta do usuário logado e todos os dados dele.</summary>
+        /// <remarks>Apaga também os locais, alertas, compromissos e preferências do usuário. Não pode ser desfeito.</remarks>
+        /// <response code="200">Conta excluída.</response>
+        /// <response code="401">Token ausente ou inválido.</response>
+        /// <response code="403">Contas de administrador não podem ser excluídas.</response>
+        /// <response code="404">Conta não encontrada.</response>
+        [HttpDelete("me")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ExcluirConta()
+        {
+            var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            try
+            {
+                var excluida = await _service.ExcluirContaAsync(usuarioId);
+                return excluida
+                    ? Ok(new { mensagem = "Conta excluída com sucesso. Todos os seus dados foram apagados." })
+                    : NotFound(new { mensagem = "Conta não encontrada. Ela pode já ter sido excluída." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { mensagem = ex.Message });
+            }
+        }
     }
 }

@@ -94,5 +94,47 @@ namespace GaroAvisa.UnitTests.Services
             Assert.NotNull(resposta);
             Assert.Equal("token-de-teste", resposta.Token);
         }
+
+        [Fact]
+        public async Task ExcluirConta_UsuarioExiste_ExcluiERetornaTrue()
+        {
+            // Arrange
+            var usuario = new Usuario { Id = 7, Nome = "Ana", Email = "ana@teste.com", Tipo = "USUARIO" };
+            _mockRepository.Setup(r => r.BuscarPorIdAsync(7)).ReturnsAsync(usuario);
+
+            // Act
+            var excluida = await _service.ExcluirContaAsync(7);
+
+            // Assert
+            Assert.True(excluida);
+            _mockRepository.Verify(r => r.ExcluirAsync(usuario), Times.Once);
+        }
+
+        [Fact]
+        public async Task ExcluirConta_UsuarioAdmin_LancaInvalidOperationException()
+        {
+            // Arrange
+            var admin = new Usuario { Id = 1, Nome = "Admin", Email = "admin@teste.com", Tipo = "ADMIN" };
+            _mockRepository.Setup(r => r.BuscarPorIdAsync(1)).ReturnsAsync(admin);
+
+            // Act + Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.ExcluirContaAsync(1));
+            _mockRepository.Verify(r => r.ExcluirAsync(It.IsAny<Usuario>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task ExcluirConta_UsuarioNaoExiste_RetornaFalse()
+        {
+            // Arrange
+            _mockRepository.Setup(r => r.BuscarPorIdAsync(99)).ReturnsAsync((Usuario?)null);
+
+            // Act
+            var excluida = await _service.ExcluirContaAsync(99);
+
+            // Assert
+            Assert.False(excluida);
+            _mockRepository.Verify(r => r.ExcluirAsync(It.IsAny<Usuario>()), Times.Never);
+        }
     }
 }
+

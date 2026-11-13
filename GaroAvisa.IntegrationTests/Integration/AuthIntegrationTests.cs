@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using GaroAvisa.Application.DTOs;
 using GaroAvisa.IntegrationTests.FactoryFixture;
@@ -70,6 +71,44 @@ namespace GaroAvisa.IntegrationTests.Integration
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task ExcluirConta_ApagaUsuarioEImpedeNovoLogin()
+        {
+            // Arrange
+            var email = $"excluir-{Guid.NewGuid():N}@teste.com";
+            var cadastro = await _client.PostAsJsonAsync("/api/Auth/cadastro", new { nome = "Ana", email, senha = "123456" });
+            var login = await cadastro.Content.ReadFromJsonAsync<LoginRespostaDto>();
+
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", login!.Token);
+            await TestHelper.CriarLocalAsync(client);
+
+            // Act
+            var response = await client.DeleteAsync("/api/Auth/me");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var me = await client.GetAsync("/api/Auth/me");
+            Assert.Equal(HttpStatusCode.Unauthorized, me.StatusCode);
+            var novoLogin = await _client.PostAsJsonAsync("/api/Auth/login", new { email, senha = "123456" });
+            Assert.Equal(HttpStatusCode.Unauthorized, novoLogin.StatusCode);
+        }
+
+        [Fact]
+        public async Task ExcluirConta_Admin_RetornaForbidden()
+        {
+            // Arrange
+            var admin = await TestHelper.CriarClienteAdminAsync(_factory);
+
+            // Act
+            var response = await admin.DeleteAsync("/api/Auth/me");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            var me = await admin.GetAsync("/api/Auth/me");
+            Assert.Equal(HttpStatusCode.OK, me.StatusCode);
         }
 
         [Fact]
