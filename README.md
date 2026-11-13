@@ -110,7 +110,7 @@ gs-dotnet/
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/lianalyumi/dotnet-gs2.git
+git clone https://github.com/GLOBAL2-2026-GaroAvisa/dotnet-gs2.git
 cd dotnet-gs2
 ```
 
