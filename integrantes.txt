@@ -1,0 +1,13 @@
+GLOBAL SOLUTION 2026/2 - CITIZENTECH
+Advanced Business Development with .NET
+
+Projeto: GaroAvisa API
+
+Integrantes:
+RM561713 - Eduardo Batista Locaspi - 2TDSPI
+RM563000 - Enzo Vieira Bernardini - 2TDSPI
+RM565698 - Liana Lyumi Morisita Fujisima - 2TDSPI
+RM561833 - Victor Alves Lopes - 2TDSPI
+
+Repositório no GitHub:
+https://github.com/GLOBAL2-2026-GaroAvisa/dotnet-gs2
